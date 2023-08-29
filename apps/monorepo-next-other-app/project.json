@@ -1,0 +1,104 @@
+{
+  "name": "monorepo-next-other-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/monorepo-next-other-app",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/monorepo-next-other-app"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/monorepo-next-other-app"
+        },
+        "production": {}
+      },
+      "dependsOn": ["build-custom-server"]
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "monorepo-next-other-app:build",
+        "dev": true,
+        "customServerTarget": "monorepo-next-other-app:serve-custom-server"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "monorepo-next-other-app:build:development",
+          "dev": true,
+          "customServerTarget": "monorepo-next-other-app:serve-custom-server:development"
+        },
+        "production": {
+          "buildTarget": "monorepo-next-other-app:build:production",
+          "dev": false,
+          "customServerTarget": "monorepo-next-other-app:serve-custom-server:production"
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "monorepo-next-other-app:build:production"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/monorepo-next-other-app/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/monorepo-next-other-app/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "build-custom-server": {
+      "executor": "@nx/js:tsc",
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/monorepo-next-other-app",
+        "main": "apps/monorepo-next-other-app/server/main.ts",
+        "tsConfig": "apps/monorepo-next-other-app/tsconfig.server.json",
+        "clean": false,
+        "assets": []
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve-custom-server": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "monorepo-next-other-app:build-custom-server"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "monorepo-next-other-app:build-custom-server:development"
+        },
+        "production": {
+          "buildTarget": "monorepo-next-other-app:build-custom-server:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

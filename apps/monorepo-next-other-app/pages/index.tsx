@@ -1,9 +1,8 @@
 import { Header } from '@monorepo-next/header';
-
 export function Index() {
   return (
     <div className="h-screen overflow-y-auto bg-gray-200">
-      <Header title="main-app" />
+      <Header title="other-app" />
     </div>
   );
 }
